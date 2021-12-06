@@ -1,0 +1,38 @@
+image: gitlab/dind
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay
+  SPRING_PROFILES_ACTIVE: gitlab-ci
+  USER_GITLAB: tuanbeovnn
+  APP_NAME: WebApplication
+  REPO: kingfoodauto
+
+stages:
+  - build
+  - docker
+  - deploy
+
+maven-build:
+  image: maven:3-jdk-8
+  stage: build
+  script: "mvn clean package -B"
+  artifacts:
+    paths:
+      - application/target/*.jar
+docker-build:
+  stage: docker
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker build -t registry.gitlab.com/tuanbeovnn/$REPO ./application
+    - docker push registry.gitlab.com/tuanbeovnn/$REPO
+auto-deploy:
+  stage: deploy
+  tags: 
+    - kingfood
+  script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker pull registry.gitlab.com/tuanbeovnn/kingfoodauto
+    - docker rm -f kingfood
+    - docker run -d --name kingfood -p 9002:8080 registry.gitlab.com/tuanbeovnn/kingfoodauto
