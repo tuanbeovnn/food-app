@@ -2,7 +2,7 @@ package com.foodapp.backend.config;
 
 
 
-import com.foodapp.backend.constants.AppConstant;
+import com.foodapp.backend.constants.AppConstants;
 import com.foodapp.backend.dto.UserPrincipalOauth2;
 import com.foodapp.backend.entity.UserEntity;
 import com.foodapp.backend.repository.UserRepository;
@@ -38,7 +38,7 @@ public class CustomTokenEnhancer extends JwtAccessTokenConverter {
         if (roles.contains("ROLE_ADMIN") || roles.contains("ROLE_USER")) {
             customerAccessToken.setExpiration(new Date(System.currentTimeMillis() + ((60 * 60 * 1000)/2)));
         }else if (roles.contains("ROLE_SUPER_ADMIN")) {
-            customerAccessToken.setExpiration(new Date(System.currentTimeMillis() + (AppConstant.O2Constants.ACCESS_TOKEN_VALIDITY__SUPER_MILLISECONDS * 1 * 60 * 60 * 1000)));
+            customerAccessToken.setExpiration(new Date(System.currentTimeMillis() + (AppConstants.O2Constants.ACCESS_TOKEN_VALIDITY__SUPER_MILLISECONDS * 1 * 60 * 60 * 1000)));
         }
 
         // set refresh token into database

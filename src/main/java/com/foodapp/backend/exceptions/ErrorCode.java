@@ -23,6 +23,8 @@ public enum ErrorCode {
     USER_EXISTS(HttpStatus.BAD_REQUEST,"LMS-40019","User had been already exists."),
     USER_NOT_LOGIN(HttpStatus.INTERNAL_SERVER_ERROR,"LMS-40020","Customer needs to login"),
     ACTIVED_ACCOUNT(HttpStatus.INTERNAL_SERVER_ERROR,"LMS-40021","Account has been activated"),
+    METHOD_SUPPORT(HttpStatus.INTERNAL_SERVER_ERROR,"LMS-40024","Method does not support"),
+    ACCESS_DENIED(HttpStatus.FORBIDDEN,"LMS-40024","Access Denied"),
     UNSUPPORT_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "LMS-40020", "Unsupport this file extension");
 
 

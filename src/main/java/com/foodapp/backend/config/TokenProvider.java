@@ -2,9 +2,14 @@ package com.foodapp.backend.config;
 
 
 
-import com.foodapp.backend.constants.AppConstant;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foodapp.backend.constants.AppConstants;
 import com.foodapp.backend.utils.SecurityUtils;
+import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,37 +18,30 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
 @Component
 public class TokenProvider {
-    @Autowired
-    private TokenStore tokenStore;
+    public static final long JWT_TOKEN_VALIDITY = 60 * 60 * 24 * 30;
+    private static final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
-    public String getUsernameFromToken() {
-        String username = getTokenInfo(AppConstant.O2Constants.USER_NAME).toString();
-        return username;
-    }
+    private final static String SECRET = "javanuise";
 
     UsernamePasswordAuthenticationToken getAuthentication(Collection<? extends GrantedAuthority> authorities, final UserDetails userDetails) {
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
-    public String getEmailFromToken() {
-        String email = getTokenInfo(AppConstant.O2Constants.EMAIL).toString();
-        return email;
+    public String generateToken(UserDetails userDetails) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> claims = objectMapper.convertValue(userDetails, Map.class);
+        return doGenerateToken(claims, userDetails.getUsername());
     }
-
-    public Object getTokenInfo(String key) {
-        Optional<String> tokenValue = SecurityUtils.getTokenValue();
-        if (!tokenValue.isPresent()) {
-            return null;
-        }
-        final OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue.get());
-        Map<String, Object> additionalInformation = accessToken.getAdditionalInformation();
-        return additionalInformation.get(key);
+    public String doGenerateToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .signWith(SignatureAlgorithm.HS512, SECRET).compact();
     }
-
 
 }
