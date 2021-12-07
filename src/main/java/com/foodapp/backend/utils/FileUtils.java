@@ -25,18 +25,20 @@ public class FileUtils {
     private String directoryClientRequest;
 
     public String save(MultipartFile file, String path, String fileName) {
-        //this.createFile();
-        File pathSaveFile = new File(UPLOAD_DIR + path);
+        String currentDate = DateTimeUtils.getDateTimeNow("yyyyMMdd");
+        String newPath = UPLOAD_DIR + path + currentDate;
+        File pathSaveFile = new File(newPath);
         if (!pathSaveFile.exists()) {
-            pathSaveFile.mkdir();
+            pathSaveFile.mkdirs();
         }
-        Path rootCustomFile = Paths.get(UPLOAD_DIR + path);
+        Path rootCustomFile = Paths.get(newPath);
         try {
             Files.copy(file.getInputStream(), rootCustomFile.resolve(fileName));
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
         }
-        return path + fileName;
+        return path + currentDate + "/" + fileName;
     }
 
     /**
@@ -75,5 +77,4 @@ public class FileUtils {
         fileNameClient = fileNameClient.substring(0, tagFileSub > 15 ? 15 : tagFileSub);
         return fileNameClient + "_" + dateTimeNow + "." + splitString[splitString.length - 1];
     }
-
 }

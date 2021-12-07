@@ -2,7 +2,7 @@ package com.foodapp.backend.config;
 
 
 
-import com.foodapp.backend.constants.AppConstant;
+import com.foodapp.backend.constants.AppConstants;
 import com.foodapp.backend.exceptions.MyWebResponseExceptionTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -48,12 +48,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     public void configure(ClientDetailsServiceConfigurer configurer) throws Exception {
         configurer.inMemory()
-                .withClient(AppConstant.O2Constants.CLIEN_ID)
-                .secret(encoder.encode(AppConstant.O2Constants.CLIENT_SECRET))
-                .authorizedGrantTypes(AppConstant.O2Constants.GRANT_TYPE_PASSWORD, AppConstant.O2Constants.AUTHORIZATION_CODE, AppConstant.O2Constants.REFRESH_TOKEN, AppConstant.O2Constants.IMPLICIT)
-                .scopes(AppConstant.O2Constants.SCOPE_READ, AppConstant.O2Constants.SCOPE_WRITE, AppConstant.O2Constants.TRUST)
+                .withClient(AppConstants.O2Constants.CLIEN_ID)
+                .secret(encoder.encode(AppConstants.O2Constants.CLIENT_SECRET))
+                .authorizedGrantTypes(AppConstants.O2Constants.GRANT_TYPE_PASSWORD, AppConstants.O2Constants.AUTHORIZATION_CODE, AppConstants.O2Constants.REFRESH_TOKEN, AppConstants.O2Constants.IMPLICIT)
+                .scopes(AppConstants.O2Constants.SCOPE_READ, AppConstants.O2Constants.SCOPE_WRITE, AppConstants.O2Constants.TRUST)
 //                .accessTokenValiditySeconds(AppConstant.O2Constants.ACCESS_TOKEN_VALIDITY_SECONDS)
-                .refreshTokenValiditySeconds(AppConstant.O2Constants.REFRESH_TOKEN_VALIDITY_SECONDS);
+                .refreshTokenValiditySeconds(AppConstants.O2Constants.REFRESH_TOKEN_VALIDITY_SECONDS);
     }
 
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {

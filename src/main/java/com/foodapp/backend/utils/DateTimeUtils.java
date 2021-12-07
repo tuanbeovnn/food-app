@@ -2,14 +2,20 @@ package com.foodapp.backend.utils;
 
 
 import com.foodapp.backend.exceptions.ClientException;
+import com.foodapp.backend.exceptions.CommonUtils;
+import com.foodapp.backend.exceptions.CustomException;
 import org.apache.commons.lang.StringUtils;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * DateTimeUtils
@@ -18,19 +24,29 @@ import java.util.Date;
  */
 public class DateTimeUtils {
 
-    /**
-     * getDateTimeNow get date time now convert to String
-     *
-     * @param format : format of date
-     * @return String {java.lang.String}
-     */
     public static String getDateTimeNow(String format) {
         if (format == null) {
             format = "dd/MM/yyyy HH:mm:ss";
         }
-        SimpleDateFormat formatter = new SimpleDateFormat(format);
-        Date dateNow = new Date(System.currentTimeMillis());
-        return formatter.format(dateNow);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        Date now = new Date(System.currentTimeMillis());
+        return simpleDateFormat.format(now);
+    }
+
+    public static String formatDate(Date date, String format) {
+        if (format == null) {
+            format = "dd/MM/yyyy HH:mm:ss";
+        }
+        if (date == null) {
+            return null;
+        }
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
+        return simpleDateFormat.format(date);
+
+    }
+
+    public static Date getDateTimeNow() {
+        return new Date(System.currentTimeMillis());
     }
 
     /**
@@ -57,26 +73,26 @@ public class DateTimeUtils {
      * @param dateFormat : format of date (client request)
      * @return Timestamp {java.sql.Timestamp}
      */
-    public static Timestamp convertStringRequestToTimesTamp(String date, String dateFormat) {
-        try {
-            if (StringUtils.isBlank(date)) {
-                return null;
-            } else {
-                DateFormat formatter = new SimpleDateFormat(dateFormat);
-                Timestamp result = null;
-                if (date.contains("T")) {
-                    java.sql.Date dateAfterFormat = (java.sql.Date) formatter.parse(date.trim().replaceAll("Z$", "+0000"));
-                    result = new Timestamp(dateAfterFormat.getTime());
-                } else {
-                    Date dateAfterFormat = formatter.parse(date);
-                    result = new Timestamp(dateAfterFormat.getTime());
-                }
-                return result;
-            }
-        } catch (Exception e) {
-            throw new ClientException("convert date to timestamp fail");
-        }
-    }
+//    public static Timestamp convertStringRequestToTimesTamp(String date, String dateFormat) {
+//        try {
+//            if (StringUtils.isBlank(date)) {
+//                return null;
+//            } else {
+//                DateFormat formatter = new SimpleDateFormat(dateFormat);
+//                Timestamp result = null;
+//                if (date.contains("T")) {
+//                    java.sql.Date dateAfterFormat = (java.sql.Date) formatter.parse(date.trim().replaceAll("Z$", "+0000"));
+//                    result = new Timestamp(dateAfterFormat.getTime());
+//                } else {
+//                    Date dateAfterFormat = formatter.parse(date);
+//                    result = new Timestamp(dateAfterFormat.getTime());
+//                }
+//                return result;
+//            }
+//        } catch (Exception e) {
+//            throw new CustomException("convert date to timestamp fail", CommonUtils.putError("date", "ERR_007"));
+//        }
+//    }
 
     /**
      * compareAfterDateTimeNow : compare date after vs date now
@@ -155,6 +171,50 @@ public class DateTimeUtils {
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
+    }
+
+    /**
+     * convertToHoursMinuteSecond
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public static String convertToHoursMinuteSecond(Date startDate, Date endDate) {
+        StringBuilder result = new StringBuilder();
+        long duration = endDate.getTime() - startDate.getTime();
+        long house = TimeUnit.MILLISECONDS.toHours(duration);
+        result.append(house).append(":");
+        long minute = TimeUnit.MILLISECONDS.toMinutes(duration) - (house * 60);
+        result.append(minute).append(":");
+        long second = TimeUnit.MILLISECONDS.toSeconds(duration) - (minute * 60);
+        result.append(second);
+        return result.toString();
+    }
+
+    /**
+     * getSecond
+     *
+     * @param startDate
+     * @param endDate
+     * @return
+     */
+    public static int getSecond(Date startDate, Date endDate) {
+        LocalDateTime ldtStart = LocalDateTime.ofInstant(startDate.toInstant(), ZoneId.systemDefault());
+        LocalDateTime ldtEndDate = LocalDateTime.ofInstant(endDate.toInstant(), ZoneId.systemDefault());
+        return (int) Duration.between(ldtStart, ldtEndDate).getSeconds() / 60 + 1;
+    }
+
+    /**
+     * getDayWeek
+     *
+     * @param date: data to get day week
+     * @return {int}
+     */
+    public static int getDayWeek(Date date) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        return c.get(Calendar.DAY_OF_WEEK);
     }
 
 }

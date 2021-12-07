@@ -1,7 +1,7 @@
 package com.foodapp.backend.service.impl;
 
 
-import com.foodapp.backend.constants.AppConstant;
+import com.foodapp.backend.constants.AppConstants;
 import com.foodapp.backend.dto.UserPrincipalOauth2;
 import com.foodapp.backend.entity.UserEntity;
 import com.foodapp.backend.repository.UserRepository;
@@ -21,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findOneByEmailOrUserNameAndStatus(email, email, AppConstant.ACTIVE.ACTIVE_STATUS);
+        UserEntity userEntity = userRepository.findOneByEmailOrUserNameAndStatus(email, email, AppConstants.ACTIVE.ACTIVE_STATUS);
         if (userEntity == null) {
             throw new UsernameNotFoundException("User not found");
         }

@@ -52,7 +52,6 @@ public class CustomException extends RuntimeException {
     }
 
 
-
     public String getErrorMessage() {
         return errorMessage;
     }

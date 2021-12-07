@@ -30,7 +30,7 @@ import org.springframework.util.CollectionUtils;
 import javax.mail.MessagingException;
 import java.util.List;
 import java.util.UUID;
-import static com.foodapp.backend.constants.AppConstant.ACTIVE.ACTIVE_STATUS;
+import static com.foodapp.backend.constants.AppConstants.ACTIVE.ACTIVE_STATUS;
 
 @Service
 public class UserServiceImpl implements UserService {

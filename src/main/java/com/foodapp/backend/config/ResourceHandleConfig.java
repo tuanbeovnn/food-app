@@ -1,6 +1,6 @@
 package com.foodapp.backend.config;
 
-import com.foodapp.backend.constants.AppConstant;
+import com.foodapp.backend.constants.AppConstants;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +16,7 @@ import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHand
 public class ResourceHandleConfig extends ResourceServerConfigurerAdapter {
 
     public void configure(ResourceServerSecurityConfigurer resourceServerSecurityConfigurer) {
-        resourceServerSecurityConfigurer.resourceId(AppConstant.ResourceServer.RESOURCE_ID).stateless(false);
+        resourceServerSecurityConfigurer.resourceId(AppConstants.ResourceServer.RESOURCE_ID).stateless(false);
     }
 
 
